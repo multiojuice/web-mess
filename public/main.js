@@ -4,27 +4,40 @@
 
   var socket = io();
 
-  // canvas.addEventListener('mousedown', onMouseDown, false);
-  // canvas.addEventListener('mouseup', onMouseUp, false);
-  // canvas.addEventListener('mouseout', onMouseUp, false);
-  // canvas.addEventListener('mousemove', throttle(onMouseMove, 10), false);
-  const repeat_area = document.getElementsByClassName("repeat-class")[0];
-  const input_area = document.getElementsByClassName("input-area")[0];
-  input_area.addEventListener('change', onChange)
+  const icon = document.getElementsByClassName("icon")[0];
+  icon.style.top = "0px";
+  icon.style.left = "0px";
 
-  // socket.on('drawing', onDrawingEvent);
-  socket.on('repeat', onRepeat);
-
-  function onChange() {
-    console.log('Change')
-    console.log(input_area.value)
-    socket.emit('repeat', {word: input_area.value})
+  document.addEventListener('keydown', (event) => {
+  const keyName = event.key;
+  let px_val;
+  switch (keyName) {
+    case 's':
+      px_val = parseInt(icon.style.top || 0) + 1;
+      icon.style.top = `${px_val}%`;
+      break;
+    case 'w':
+      px_val = parseInt(icon.style.top || 0) - 1;
+      icon.style.top = `${px_val}%`;
+      break;
+    case 'd':
+      px_val = parseInt(icon.style.left || 0) + 1;
+      icon.style.left = `${px_val}%`;
+      break;
+    case 'a':
+      px_val = parseInt(icon.style.left || 0) - 1;
+      icon.style.left = `${px_val}%`;
+      break;
   }
+  socket.emit('move', {id: 'enemy', left: icon.style.left, top: icon.style.top})
+});
 
-  function onRepeat(word) {
-    console.warn(word);
-    console.warn('here')
-    repeat_area.innerHTML = word.word;
+  socket.on('move', onMove);
+
+  function onMove(data) {
+    const enemy = document.getElementsByClassName(data.id)[0];
+    enemy.style.left = data.left;
+    enemy.style.top = data.top;
   }
 
 })();

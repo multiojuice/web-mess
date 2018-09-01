@@ -7,9 +7,7 @@ const port = process.env.PORT || 3000;
 app.use(express.static('./public'));
 
 function onConnection(socket){
-  console.warn('connected')
-  console.warn(socket)
-  socket.on('repeat', (word) => socket.broadcast.emit('repeat', word));
+  socket.on('move', (data) => socket.broadcast.emit('move', data));
 }
 
 io.on('connect', onConnection);

@@ -12,39 +12,25 @@ html, body {
   padding: 0;
 }
 
-.input-area {
-  border: 2px blue solid;
-  border-radius: 5px;
-  color: green;
-  padding: 20px;
-  font-weight: bold;
-  width: 600px;
-  outline-color: none;
-}
-
-.repeat-class {
-  border-radius: 5px;
-  padding: 20px;
-  border: 2px red solid;
-  color: orange;
-  font-weight: bold;
-  width: 600px;
-  height: 100px
-}
-
-.message {
-  display: flex;
-  flex-flow: row nowrap;
+.map {
+  height: 100%;
   width: 100%;
-  padding: 20px;
-  font-weight: bold;
-  justify-content: space-around;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  background-color: gray;
 }
 
-.message .label-me {
-  color: green;
+.icon {
+  height: 42px;
+  width: 42px;
+  position: absolute;
 }
 
-.message .label-them {
-  color: orange;
+.enemy {
+  height: 42px;
+  width: 42px;
+  position: absolute;
 }

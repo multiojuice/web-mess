@@ -34,6 +34,7 @@
   socket.on('move', onMove);
   socket.on('create', onCreate);
   socket.on('connect', () => socket.emit('create', {id: socket.id}))
+  socket.on('delete', onDelete);
 
   function onMove(data) {
     let enemy = document.getElementById(data.id);
@@ -49,5 +50,11 @@
     newIcon.id = data.id;
     newIcon.src = "tank.svg";
     wholeMap.appendChild(newIcon);
+  }
+
+  function onDelete(id) {
+    const deletedPlayer = document.getElementById(id);
+    deletedPlayer.parentNode.removeChild(deletedPlayer);
+    console.log('deleted', id)
   }
 })();

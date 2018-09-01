@@ -36,7 +36,9 @@
   socket.on('connect', () => socket.emit('create', {id: socket.id}))
 
   function onMove(data) {
-    const enemy = document.getElementById(data.id);
+    let enemy = document.getElementById(data.id);
+    if(!enemy) onCreate({id: data.id});
+    enemy = document.getElementById(data.id);
     enemy.style.left = data.left;
     enemy.style.top = data.top;
   }

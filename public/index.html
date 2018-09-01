@@ -7,10 +7,14 @@
 </head>
 <body>
 
-  <input class="input-area" contenteditable="true">
-  </input>
-
-  <div class="repeat-class">a</div>
+  <div class="message mine">
+    <h1 class="label-me">Your Message!</h1>
+    <input class="input-area" contenteditable="true"></input>
+  </div>
+  <div  class="message theirs">
+    <h1 class="label-them">Their Message For You!</h1>
+    <div class="repeat-class">(Waiting for Message)</div>
+  </div>
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="/main.js"></script>

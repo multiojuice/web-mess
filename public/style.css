@@ -13,9 +13,38 @@ html, body {
 }
 
 .input-area {
-  background-color: blue;
+  border: 2px blue solid;
+  border-radius: 5px;
+  color: green;
+  padding: 20px;
+  font-weight: bold;
+  width: 600px;
+  outline-color: none;
 }
 
 .repeat-class {
-  background-color: red;
+  border-radius: 5px;
+  padding: 20px;
+  border: 2px red solid;
+  color: orange;
+  font-weight: bold;
+  width: 600px;
+  height: 100px
+}
+
+.message {
+  display: flex;
+  flex-flow: row nowrap;
+  width: 100%;
+  padding: 20px;
+  font-weight: bold;
+  justify-content: space-around;
+}
+
+.message .label-me {
+  color: green;
+}
+
+.message .label-them {
+  color: orange;
 }

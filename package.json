@@ -1,0 +1,15 @@
+{
+  "name": "web-mess",
+  "version": "0.0.1",
+  "description": "Messaging system using socket.io and node, a quick project to familiarize myself with web-sockets",
+  "main": "index.js",
+  "author": "Owen Sullivan",
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.16.3",
+    "socket.io": "latest"
+  }
+}

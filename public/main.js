@@ -5,8 +5,7 @@
   var socket = io();
 
   const icon = document.getElementsByClassName("icon")[0];
-  icon.style.top = "0px";
-  icon.style.left = "0px";
+  const wholeMap = document.getElementsByClassName("map")[0];
 
   document.addEventListener('keydown', (event) => {
   const keyName = event.key;
@@ -29,15 +28,24 @@
       icon.style.left = `${px_val}%`;
       break;
   }
-  socket.emit('move', {id: 'enemy', left: icon.style.left, top: icon.style.top})
+  socket.emit('move', {id: socket.id, left: icon.style.left, top: icon.style.top})
 });
 
   socket.on('move', onMove);
+  socket.on('create', onCreate);
+  socket.on('connect', () => socket.emit('create', {id: socket.id}))
 
   function onMove(data) {
-    const enemy = document.getElementsByClassName(data.id)[0];
+    const enemy = document.getElementById(data.id);
     enemy.style.left = data.left;
     enemy.style.top = data.top;
   }
 
+  function onCreate(data) {
+    const newIcon = document.createElement("img");
+    newIcon.classList.add("enemy");
+    newIcon.id = data.id;
+    newIcon.src = "tank.svg";
+    wholeMap.appendChild(newIcon);
+  }
 })();

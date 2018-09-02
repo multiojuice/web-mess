@@ -18,8 +18,8 @@
       handleMove(keyName);
       break;
     case ' ':
-      socket.emit('bullet', {image: 'assets/enemy_bullet.svg', left: icon.style.left, top: icon.style.top})
-      onBullet({image: 'assets/friendly_bullet.svg', left: icon.style.left, top: icon.style.top});
+      socket.emit('bullet', {image: 'assets/enemy_bullet.svg', left: icon.style.left, top: icon.style.top, dir: currentDir})
+      onBullet({image: 'assets/friendly_bullet.svg', left: icon.style.left, top: icon.style.top, dir: currentDir});
       break;
   }
 });
@@ -37,7 +37,7 @@
     enemy.style.left = data.left;
     enemy.style.top = data.top;
     enemy.classList.remove('up', 'down', 'right', 'left');
-    enemy.classList.add(data.dir)
+    enemy.classList.add(data.dir);
   }
 
   function onCreate(data) {
@@ -88,19 +88,35 @@
     const newBullet = document.createElement("img");
     newBullet.src = data.image;
     newBullet.classList.add("bullet");
-    newBullet.classList.add("left");
+    newBullet.classList.add(data.dir);
     newBullet.style.top = data.top;
     newBullet.style.left = data.left;
     wholeMap.appendChild(newBullet);
-    let currentPos = parseInt(data.left);
 
-    let motionInterval = setInterval(function() {
-        currentPos += 1;
-        if (currentPos < 1 || currentPos >= 99) {
-          newBullet.parentNode.removeChild(newBullet);
-          clearInterval(motionInterval);
-        }
-        newBullet.style.left = currentPos+"%";
-    },20);
+    if(data.dir === 'up' || data.dir === 'down') {
+      const speed = data.dir === 'up' ? -1 : 1;
+      let currentPos = parseInt(data.top);
+
+      let motionInterval = setInterval(function() {
+          currentPos += speed;
+          if (currentPos < 1 || currentPos >= 99) {
+            newBullet.parentNode.removeChild(newBullet);
+            clearInterval(motionInterval);
+          }
+          newBullet.style.top = currentPos+"%";
+      },20);
+    } else {
+      const speed = data.dir === 'right' ? 1 : -1;
+      let currentPos = parseInt(data.left);
+
+      let motionInterval = setInterval(function() {
+          currentPos += speed;
+          if (currentPos < 1 || currentPos >= 99) {
+            newBullet.parentNode.removeChild(newBullet);
+            clearInterval(motionInterval);
+          }
+          newBullet.style.left = currentPos+"%";
+      },20);
+    }
   }
 })();

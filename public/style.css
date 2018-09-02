@@ -24,19 +24,19 @@ html, body {
 }
 
 .icon {
-  height: 42px;
-  width: 42px;
+  height: 84px;
+  width: 84px;
   position: absolute;
 }
 
 .enemy {
-  height: 42px;
-  width: 42px;
+  height: 84px;
+  width: 84px;
   position: absolute;
 }
 
 .bullet {
-  width: 24px;
+  width: 48px;
   position: absolute;
 }
 

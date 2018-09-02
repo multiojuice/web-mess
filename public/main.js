@@ -7,20 +7,24 @@
   const icon = document.getElementsByClassName("icon")[0];
   const wholeMap = document.getElementsByClassName("map")[0];
   let currentDir = 'up';
+  let playerHealth = 5;
+  let amAlive = true;
 
   document.addEventListener('keydown', (event) => {
   const keyName = event.key;
-  switch (keyName) {
-    case 's':
-    case 'w':
-    case 'd':
-    case 'a':
-      handleMove(keyName);
-      break;
-    case ' ':
-      socket.emit('bullet', {image: 'assets/enemy_bullet.svg', left: icon.style.left, top: icon.style.top, dir: currentDir})
-      onBullet({image: 'assets/friendly_bullet.svg', left: icon.style.left, top: icon.style.top, dir: currentDir});
-      break;
+    if(amAlive) {
+      switch (keyName) {
+      case 's':
+      case 'w':
+      case 'd':
+      case 'a':
+        handleMove(keyName);
+        break;
+      case ' ':
+        socket.emit('bullet', {image: 'assets/enemy_bullet.svg', left: icon.style.left, top: icon.style.top, dir: currentDir, mine: false})
+        onBullet({image: 'assets/friendly_bullet.svg', left: icon.style.left, top: icon.style.top, dir: currentDir, mine: true});
+        break;
+    }
   }
 });
 
@@ -96,6 +100,7 @@
     if(data.dir === 'up' || data.dir === 'down') {
       const speed = data.dir === 'up' ? -1 : 1;
       let currentPos = parseInt(data.top);
+      const currentX = parseInt(data.left);
 
       let motionInterval = setInterval(function() {
           currentPos += speed;
@@ -103,17 +108,44 @@
             newBullet.parentNode.removeChild(newBullet);
             clearInterval(motionInterval);
           }
+          const iconPosX = parseInt(icon.style.left);
+          const iconPosY = parseInt(icon.style.top);
+          if (!data.mine && (currentPos >= iconPosY - 5 && currentPos <= iconPosY + 5) && (currentX >= iconPosX - 5 && currentX <= iconPosX + 5)) {
+            console.warn('inHitArea')
+            playerHealth -= 1;
+            newBullet.parentNode.removeChild(newBullet);
+            clearInterval(motionInterval);
+            if (playerHealth <= 0) {
+              icon.parentNode.removeChild(icon);
+              amAlive = false;
+              socket.emit('died', null);
+            }
+          }
           newBullet.style.top = currentPos+"%";
       },20);
     } else {
       const speed = data.dir === 'right' ? 1 : -1;
       let currentPos = parseInt(data.left);
+      const currentY = parseInt(data.top);
 
       let motionInterval = setInterval(function() {
           currentPos += speed;
           if (currentPos < 1 || currentPos >= 99) {
             newBullet.parentNode.removeChild(newBullet);
             clearInterval(motionInterval);
+          }
+          const iconPosX = parseInt(icon.style.left);
+          const iconPosY = parseInt(icon.style.top);
+          if (!data.mine && (currentPos >= iconPosX - 5 && currentPos <= iconPosX + 5) && (currentY >= iconPosY - 5 && currentY <= iconPosY + 5)) {
+            console.warn('inHitArea')
+            playerHealth -= 1;
+            newBullet.parentNode.removeChild(newBullet);
+            clearInterval(motionInterval);
+            if (playerHealth <= 0) {
+              icon.parentNode.removeChild(icon);
+              amAlive = false;
+              socket.emit('died', null);
+            }
           }
           newBullet.style.left = currentPos+"%";
       },20);

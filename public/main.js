@@ -6,6 +6,7 @@
 
   const icon = document.getElementsByClassName("icon")[0];
   const wholeMap = document.getElementsByClassName("map")[0];
+  let currentDir = 'up';
 
   document.addEventListener('keydown', (event) => {
   const keyName = event.key;
@@ -35,6 +36,8 @@
     enemy = document.getElementById(data.id);
     enemy.style.left = data.left;
     enemy.style.top = data.top;
+    enemy.classList.remove('up', 'down', 'right', 'left');
+    enemy.classList.add(data.dir)
   }
 
   function onCreate(data) {
@@ -56,27 +59,36 @@
       case 's':
         px_val = parseInt(icon.style.top || 0) + 1;
         icon.style.top = `${px_val}%`;
+        icon.classList.replace(currentDir, 'down');
+        currentDir = 'down';
         break;
       case 'w':
         px_val = parseInt(icon.style.top || 0) - 1;
         icon.style.top = `${px_val}%`;
+        icon.classList.replace(currentDir, 'up');
+        currentDir = 'up';
         break;
       case 'd':
         px_val = parseInt(icon.style.left || 0) + 1;
         icon.style.left = `${px_val}%`;
+        icon.classList.replace(currentDir, 'right');
+        currentDir = 'right';
         break;
       case 'a':
         px_val = parseInt(icon.style.left || 0) - 1;
         icon.style.left = `${px_val}%`;
+        icon.classList.replace(currentDir, 'left');
+        currentDir = 'left';
         break;
     }
-    socket.emit('move', {id: socket.id, left: icon.style.left, top: icon.style.top})
+    socket.emit('move', {id: socket.id, left: icon.style.left, top: icon.style.top, dir: currentDir})
   }
 
   function onBullet(data) {
     const newBullet = document.createElement("img");
     newBullet.src = data.image;
     newBullet.classList.add("bullet");
+    newBullet.classList.add("left");
     newBullet.style.top = data.top;
     newBullet.style.left = data.left;
     wholeMap.appendChild(newBullet);

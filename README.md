@@ -1,2 +1,4 @@
 # web-mess
-Messaging system using socket.io and node, a quick project to familiarize myself with web-sockets
+Free for All web browser game written using web-sockets!
+
+More info and URL coming soon :)

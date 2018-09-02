@@ -34,3 +34,8 @@ html, body {
   width: 42px;
   position: absolute;
 }
+
+.bullet {
+  width: 24px;
+  position: absolute;
+}

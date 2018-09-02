@@ -6,9 +6,44 @@
 
   const icon = document.getElementsByClassName("icon")[0];
   const wholeMap = document.getElementsByClassName("map")[0];
-  let currentDir = 'up';
+  let currentDir = 'right';
   let playerHealth = 5;
   let amAlive = true;
+  icon.style.top = '0%';
+  icon.style.left = '0%';
+  let playerTop = 0;
+  let playerLeft = 0;
+
+  // Have the plane always moving
+  let playerMovement = setInterval(function() {
+      console.warn('in movement');
+      if(playerHealth <= 0) {
+        icon.parentNode.removeChild(icon);
+        amAlive = false;
+        socket.emit('died', null);
+        clearInterval(playerMovement);
+      }
+
+      switch (currentDir) {
+        case 'up':
+          playerTop -= .5;
+          icon.style.top = `${playerTop}%`;
+          break;
+        case 'down':
+          playerTop += .5;
+          icon.style.top = `${playerTop}%`;
+          break;
+        case 'right':
+          playerLeft += .5;
+          icon.style.left = `${playerLeft}%`;
+          break;
+        case 'left':
+          playerLeft -= .5;
+          icon.style.left = `${playerLeft}%`;
+          break;
+      }
+  },20);
+
 
   document.addEventListener('keydown', (event) => {
   const keyName = event.key;
@@ -18,7 +53,7 @@
       case 'w':
       case 'd':
       case 'a':
-        handleMove(keyName);
+        handleTurn(keyName);
         break;
       case ' ':
         socket.emit('bullet', {image: 'assets/enemy_bullet.svg', left: icon.style.left, top: icon.style.top, dir: currentDir, mine: false})
@@ -57,35 +92,25 @@
     if(deletedPlayer) deletedPlayer.parentNode.removeChild(deletedPlayer);
   }
 
-  function handleMove(keyName) {
-    let px_val;
+  function handleTurn(keyName) {
     switch (keyName) {
       case 's':
-        px_val = parseInt(icon.style.top || 0) + 1;
-        icon.style.top = `${px_val}%`;
         icon.classList.replace(currentDir, 'down');
         currentDir = 'down';
         break;
       case 'w':
-        px_val = parseInt(icon.style.top || 0) - 1;
-        icon.style.top = `${px_val}%`;
         icon.classList.replace(currentDir, 'up');
         currentDir = 'up';
         break;
       case 'd':
-        px_val = parseInt(icon.style.left || 0) + 1;
-        icon.style.left = `${px_val}%`;
         icon.classList.replace(currentDir, 'right');
         currentDir = 'right';
         break;
       case 'a':
-        px_val = parseInt(icon.style.left || 0) - 1;
-        icon.style.left = `${px_val}%`;
         icon.classList.replace(currentDir, 'left');
         currentDir = 'left';
         break;
     }
-    socket.emit('move', {id: socket.id, left: icon.style.left, top: icon.style.top, dir: currentDir})
   }
 
   function onBullet(data) {

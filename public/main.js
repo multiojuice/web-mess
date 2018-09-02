@@ -110,7 +110,7 @@
           }
           const iconPosX = parseInt(icon.style.left);
           const iconPosY = parseInt(icon.style.top);
-          if (!data.mine && (currentPos >= iconPosY - 5 && currentPos <= iconPosY + 5) && (currentX >= iconPosX - 5 && currentX <= iconPosX + 5)) {
+          if (!data.mine && (currentPos >= iconPosY - 10 && currentPos <= iconPosY + 10) && (currentX >= iconPosX - 10 && currentX <= iconPosX + 10)) {
             console.warn('inHitArea')
             playerHealth -= 1;
             newBullet.parentNode.removeChild(newBullet);
@@ -136,7 +136,7 @@
           }
           const iconPosX = parseInt(icon.style.left);
           const iconPosY = parseInt(icon.style.top);
-          if (!data.mine && (currentPos >= iconPosX - 5 && currentPos <= iconPosX + 5) && (currentY >= iconPosY - 5 && currentY <= iconPosY + 5)) {
+          if (!data.mine && (currentPos >= iconPosX - 10 && currentPos <= iconPosX + 10) && (currentY >= iconPosY - 10 && currentY <= iconPosY + 10)) {
             console.warn('inHitArea')
             playerHealth -= 1;
             newBullet.parentNode.removeChild(newBullet);

@@ -6,17 +6,16 @@
 
   const icon = document.getElementsByClassName("icon")[0];
   const wholeMap = document.getElementsByClassName("map")[0];
-  let currentDir = 'right';
+  let currentDeg = 90;
   let playerHealth = 5;
   let amAlive = true;
-  icon.style.top = '0%';
-  icon.style.left = '0%';
   let playerTop = 0;
   let playerLeft = 0;
+  let isFrozen = true;
 
   // Have the plane always moving
   let playerMovement = setInterval(function() {
-      console.warn('in movement');
+      const planeSpeed = 5;
       if(playerHealth <= 0) {
         icon.parentNode.removeChild(icon);
         amAlive = false;
@@ -24,23 +23,11 @@
         clearInterval(playerMovement);
       }
 
-      switch (currentDir) {
-        case 'up':
-          playerTop -= .5;
-          icon.style.top = `${playerTop}%`;
-          break;
-        case 'down':
-          playerTop += .5;
-          icon.style.top = `${playerTop}%`;
-          break;
-        case 'right':
-          playerLeft += .5;
-          icon.style.left = `${playerLeft}%`;
-          break;
-        case 'left':
-          playerLeft -= .5;
-          icon.style.left = `${playerLeft}%`;
-          break;
+      if(!isFrozen){
+        playerLeft += planeSpeed * Math.sin(toRadians(currentDeg));
+        playerTop -= planeSpeed * Math.cos(toRadians(currentDeg));
+        icon.style.left = `${playerLeft}px`;
+        icon.style.top = `${playerTop}px`;
       }
   },20);
 
@@ -49,11 +36,12 @@
   const keyName = event.key;
     if(amAlive) {
       switch (keyName) {
-      case 's':
-      case 'w':
-      case 'd':
-      case 'a':
+      case 'h':
+      case 'f':
         handleTurn(keyName);
+        break;
+      case 'g':
+        isFrozen = !isFrozen;
         break;
       case ' ':
         socket.emit('bullet', {image: 'assets/enemy_bullet.svg', left: icon.style.left, top: icon.style.top, dir: currentDir, mine: false})
@@ -94,21 +82,15 @@
 
   function handleTurn(keyName) {
     switch (keyName) {
-      case 's':
-        icon.classList.replace(currentDir, 'down');
-        currentDir = 'down';
+      case 'h':
+        currentDeg += 4;
+        icon.style.transform = `rotate(${currentDeg}deg)`;
+        icon.style.webkitTransform = `rotate(${currentDeg}deg)`;
         break;
-      case 'w':
-        icon.classList.replace(currentDir, 'up');
-        currentDir = 'up';
-        break;
-      case 'd':
-        icon.classList.replace(currentDir, 'right');
-        currentDir = 'right';
-        break;
-      case 'a':
-        icon.classList.replace(currentDir, 'left');
-        currentDir = 'left';
+      case 'f':
+        currentDeg -= 4;
+        icon.style.transform = `rotate(${currentDeg}deg)`;
+        icon.style.webkitTransform = `rotate(${currentDeg}deg)`;
         break;
     }
   }
@@ -117,63 +99,15 @@
     const newBullet = document.createElement("img");
     newBullet.src = data.image;
     newBullet.classList.add("bullet");
-    newBullet.classList.add(data.dir);
     newBullet.style.top = data.top;
     newBullet.style.left = data.left;
     wholeMap.appendChild(newBullet);
 
-    if(data.dir === 'up' || data.dir === 'down') {
-      const speed = data.dir === 'up' ? -1 : 1;
-      let currentPos = parseInt(data.top);
-      const currentX = parseInt(data.left);
 
-      let motionInterval = setInterval(function() {
-          currentPos += speed;
-          if (currentPos < 1 || currentPos >= 99) {
-            newBullet.parentNode.removeChild(newBullet);
-            clearInterval(motionInterval);
-          }
-          const iconPosX = parseInt(icon.style.left);
-          const iconPosY = parseInt(icon.style.top);
-          if (!data.mine && (currentPos >= iconPosY - 10 && currentPos <= iconPosY + 10) && (currentX >= iconPosX - 10 && currentX <= iconPosX + 10)) {
-            console.warn('inHitArea')
-            playerHealth -= 1;
-            newBullet.parentNode.removeChild(newBullet);
-            clearInterval(motionInterval);
-            if (playerHealth <= 0) {
-              icon.parentNode.removeChild(icon);
-              amAlive = false;
-              socket.emit('died', null);
-            }
-          }
-          newBullet.style.top = currentPos+"%";
-      },20);
-    } else {
-      const speed = data.dir === 'right' ? 1 : -1;
-      let currentPos = parseInt(data.left);
-      const currentY = parseInt(data.top);
-
-      let motionInterval = setInterval(function() {
-          currentPos += speed;
-          if (currentPos < 1 || currentPos >= 99) {
-            newBullet.parentNode.removeChild(newBullet);
-            clearInterval(motionInterval);
-          }
-          const iconPosX = parseInt(icon.style.left);
-          const iconPosY = parseInt(icon.style.top);
-          if (!data.mine && (currentPos >= iconPosX - 10 && currentPos <= iconPosX + 10) && (currentY >= iconPosY - 10 && currentY <= iconPosY + 10)) {
-            console.warn('inHitArea')
-            playerHealth -= 1;
-            newBullet.parentNode.removeChild(newBullet);
-            clearInterval(motionInterval);
-            if (playerHealth <= 0) {
-              icon.parentNode.removeChild(icon);
-              amAlive = false;
-              socket.emit('died', null);
-            }
-          }
-          newBullet.style.left = currentPos+"%";
-      },20);
-    }
   }
+
+  function toRadians (angle) {
+    return angle * (Math.PI / 180);
+  }
+
 })();

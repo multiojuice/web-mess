@@ -28,6 +28,7 @@
         playerTop -= planeSpeed * Math.cos(toRadians(currentDeg));
         icon.style.left = `${playerLeft}px`;
         icon.style.top = `${playerTop}px`;
+        socket.emit('move', {id: socket.id, left: playerLeft+"px", top: playerTop+"px", degree: currentDeg});
       }
   },20);
 
@@ -63,8 +64,8 @@
     enemy = document.getElementById(data.id);
     enemy.style.left = data.left;
     enemy.style.top = data.top;
-    enemy.classList.remove('up', 'down', 'right', 'left');
-    enemy.classList.add(data.dir);
+    enemy.style.webkitTransform = `rotate(${data.degree}deg)`;
+    enemy.style.transform = `rotate(${data.degree}deg)`;
   }
 
   function onCreate(data) {
@@ -99,12 +100,11 @@
     const newBullet = document.createElement("img");
     newBullet.src = data.image;
     newBullet.classList.add("bullet");
-    newBullet.style.transform = `rotate(${data.degree}deg)`;
-    newBullet.style.webkitTransform = `rotate(${data.degree}deg)`;
     newBullet.style.top = data.top;
     newBullet.style.left = data.left;
+    newBullet.style.transform = `rotate(${data.degree}deg)`;
+    newBullet.style.webkitTransform = `rotate(${data.degree}deg)`;
     wholeMap.appendChild(newBullet);
-    
 
     const bulletDiffLeft = 10 * Math.sin(toRadians(data.degree));
     const bulletDiffTop = 10 * Math.cos(toRadians(data.degree));
@@ -114,20 +114,23 @@
     let motionInterval = setInterval(function() {
       bulletLeft += bulletDiffLeft;
       bulletTop -= bulletDiffTop;
+      // TODO kill the bullet and scale the screens
       // if (currentPos < 1 || currentPos >= 99) {
       //   newBullet.parentNode.removeChild(newBullet);
       //   clearInterval(motionInterval);
       // }
 
-      if (!data.mine) {
+      if (!data.mine && (playerTop + 20 >= bulletTop && playerTop - 20 <= bulletTop) && (playerLeft + 20 >= bulletLeft && playerLeft - 20 <= bulletLeft)) {
         playerHealth -= 1;
-        newBullet.parentNode.removeChild(newBullet);
-        clearInterval(motionInterval);
+        wholeMap.removeChild(newBullet);
+        console.warn('here');
         if (playerHealth <= 0) {
-          icon.parentNode.removeChild(icon);
+          playerTop = 0;
+          playerLeft = 0;
           amAlive = false;
           socket.emit('died', null);
         }
+        clearInterval(motionInterval);
       }
       newBullet.style.top = bulletTop+"px";
       newBullet.style.left = bulletLeft+"px";

@@ -44,8 +44,8 @@
         isFrozen = !isFrozen;
         break;
       case ' ':
-        socket.emit('bullet', {image: 'assets/enemy_bullet.svg', left: icon.style.left, top: icon.style.top, dir: currentDir, mine: false})
-        onBullet({image: 'assets/friendly_bullet.svg', left: icon.style.left, top: icon.style.top, dir: currentDir, mine: true});
+        socket.emit('bullet', {image: 'assets/enemy_bullet.svg', left: playerLeft, top: playerTop, degree: currentDeg, mine: false})
+        onBullet({image: 'assets/friendly_bullet.svg', left: playerLeft, top: playerTop, degree: currentDeg, mine: true});
         break;
     }
   }
@@ -99,11 +99,39 @@
     const newBullet = document.createElement("img");
     newBullet.src = data.image;
     newBullet.classList.add("bullet");
+    newBullet.style.transform = `rotate(${data.degree}deg)`;
+    newBullet.style.webkitTransform = `rotate(${data.degree}deg)`;
     newBullet.style.top = data.top;
     newBullet.style.left = data.left;
     wholeMap.appendChild(newBullet);
+    
 
+    const bulletDiffLeft = 10 * Math.sin(toRadians(data.degree));
+    const bulletDiffTop = 10 * Math.cos(toRadians(data.degree));
+    let bulletTop = data.top;
+    let bulletLeft = data.left;
 
+    let motionInterval = setInterval(function() {
+      bulletLeft += bulletDiffLeft;
+      bulletTop -= bulletDiffTop;
+      // if (currentPos < 1 || currentPos >= 99) {
+      //   newBullet.parentNode.removeChild(newBullet);
+      //   clearInterval(motionInterval);
+      // }
+
+      if (!data.mine) {
+        playerHealth -= 1;
+        newBullet.parentNode.removeChild(newBullet);
+        clearInterval(motionInterval);
+        if (playerHealth <= 0) {
+          icon.parentNode.removeChild(icon);
+          amAlive = false;
+          socket.emit('died', null);
+        }
+      }
+      newBullet.style.top = bulletTop+"px";
+      newBullet.style.left = bulletLeft+"px";
+    },20);
   }
 
   function toRadians (angle) {

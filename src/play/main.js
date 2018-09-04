@@ -27,6 +27,17 @@
         icon.parentNode.removeChild(icon);
         amAlive = false;
         socket.emit('died', null);
+        // show you died element
+        const deathElement = document.getElementById('died');
+        let deathOpacity = 0;
+        let youDiedInterval = setInterval(function() {
+          deathOpacity += .01;
+          deathElement.style.opacity = deathOpacity;
+          if(deathOpacity >= 1) {
+            clearInterval(youDiedInterval);
+          }
+          console.log('showing more');
+        },40);
         clearInterval(playerMovement);
       }
 

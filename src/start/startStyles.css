@@ -31,6 +31,15 @@ html, body {
   margin-top: 0px;
 }
 
+.container-row h2 {
+  color: darkred;
+  font-size: 12vh;
+  margin-bottom: 20px;
+  margin-top: 0px;
+  opacity: 0;
+  text-shadow: 2px 2px 4px #000000;
+}
+
 .container-row h3 {
   color: navy;
   font-size: 4vh;

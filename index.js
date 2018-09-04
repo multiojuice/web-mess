@@ -4,7 +4,9 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const port = process.env.PORT || 8080;
 
-app.use(express.static('./public'));
+app.use('/play' ,express.static('./src/play'));
+
+app.use('/', express.static('./src/start'))
 
 function onConnection(socket){
   socket.on('move', (data) => socket.broadcast.emit('move', data));

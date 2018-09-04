@@ -23,3 +23,40 @@ html, body {
   justify-content: center;
   align-content: center;
 }
+
+.container-row h1 {
+  color: navy;
+  font-size: 6vh;
+  margin-bottom: 20px;
+  margin-top: 0px;
+}
+
+.container-row h3 {
+  color: navy;
+  font-size: 4vh;
+  margin-bottom: 20px;
+  margin-top: 0px;
+}
+
+.container-row h4 {
+  color: navy;
+  font-size: 2vh;
+  margin-bottom: 20px;
+  margin-top: 0px;
+}
+
+.white-border button {
+  margin-top: 0px;
+  padding: 1vh;
+  border: 3px navy solid;
+  border-radius: 6px;
+  font-size: 2vh;
+  font-weight: bold;
+  color: navy;
+  background-color: inherit;
+}
+
+.white-border button:hover {
+  cursor:pointer;
+  filter: brightness(80%);
+}

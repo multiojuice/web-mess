@@ -114,11 +114,11 @@
     let motionInterval = setInterval(function() {
       bulletLeft += bulletDiffLeft;
       bulletTop -= bulletDiffTop;
-      // TODO kill the bullet and scale the screens
-      // if (currentPos < 1 || currentPos >= 99) {
-      //   newBullet.parentNode.removeChild(newBullet);
-      //   clearInterval(motionInterval);
-      // }
+      if (bulletTop <= 0 || bulletTop >= screen.height || bulletLeft <= 0 || bulletLeft >= screen.width) {
+        newBullet.parentNode.removeChild(newBullet);
+        clearInterval(motionInterval);
+        console.warn('killedBullet');
+      }
 
       if (!data.mine && (playerTop + 20 >= bulletTop && playerTop - 20 <= bulletTop) && (playerLeft + 20 >= bulletLeft && playerLeft - 20 <= bulletLeft)) {
         playerHealth -= 1;

@@ -9,8 +9,12 @@
   let currentDeg = 90;
   let playerHealth = 5;
   let amAlive = true;
-  let playerTop = 0;
-  let playerLeft = 0;
+  let playerTop = window.innerHeight/2;
+  let playerLeft =  window.innerWidth/2;
+  icon.style.top = playerTop+'px';
+  icon.style.left = playerLeft+'px';
+  icon.style.transform = `rotate(${currentDeg}deg)`;
+  icon.style.webkitTransform = `rotate(${currentDeg}deg)`;
   let isFrozen = true;
 
   // Have the plane always moving
@@ -114,7 +118,7 @@
     let motionInterval = setInterval(function() {
       bulletLeft += bulletDiffLeft;
       bulletTop -= bulletDiffTop;
-      if (bulletTop <= 0 || bulletTop >= screen.height || bulletLeft <= 0 || bulletLeft >= screen.width) {
+      if (bulletTop <= 0 || bulletTop >= window.innerHeight || bulletLeft <= 0 || bulletLeft >= window.innerWidth) {
         newBullet.parentNode.removeChild(newBullet);
         clearInterval(motionInterval);
         console.warn('killedBullet');

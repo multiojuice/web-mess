@@ -6,6 +6,9 @@
 
   const icon = document.getElementsByClassName("icon")[0];
   const wholeMap = document.getElementsByClassName("map")[0];
+  const TURNING_LEFT = -1;
+  const TURNING_RIGHT = 1;
+  let turning = 0;
   let currentDeg = 90;
   let playerHealth = 5;
   let amAlive = true;
@@ -27,6 +30,16 @@
         clearInterval(playerMovement);
       }
 
+      if(turning === TURNING_RIGHT) {
+        currentDeg += 4;
+        icon.style.transform = `rotate(${currentDeg}deg)`;
+        icon.style.webkitTransform = `rotate(${currentDeg}deg)`;
+      } else if (turning === TURNING_LEFT) {
+        currentDeg -= 4;
+        icon.style.transform = `rotate(${currentDeg}deg)`;
+        icon.style.webkitTransform = `rotate(${currentDeg}deg)`;
+      }
+
       if(!isFrozen){
         playerLeft += planeSpeed * Math.sin(toRadians(currentDeg));
         playerTop -= planeSpeed * Math.cos(toRadians(currentDeg));
@@ -36,25 +49,40 @@
       }
   },20);
 
+  document.addEventListener('keyup', (event) => {
+    const keyName = event.key;
+      if(amAlive) {
+        switch (keyName) {
+          case 'h':
+            turning = 0;
+            break;
+          case 'f':
+            turning = 0;
+            break;
+        }
+      }
+  });
 
   document.addEventListener('keydown', (event) => {
   const keyName = event.key;
     if(amAlive) {
       switch (keyName) {
-      case 'h':
-      case 'f':
-        handleTurn(keyName);
-        break;
-      case 'g':
-        isFrozen = !isFrozen;
-        break;
-      case ' ':
-        socket.emit('bullet', {image: 'assets/enemy_bullet.svg', left: playerLeft, top: playerTop, degree: currentDeg, mine: false})
-        onBullet({image: 'assets/friendly_bullet.svg', left: playerLeft, top: playerTop, degree: currentDeg, mine: true});
-        break;
+        case 'h':
+          turning = TURNING_RIGHT;
+          break;
+        case 'f':
+          turning = TURNING_LEFT;
+          break;
+        case 'g':
+          isFrozen = !isFrozen;
+          break;
+        case ' ':
+          socket.emit('bullet', {image: 'assets/enemy_bullet.svg', left: playerLeft, top: playerTop, degree: currentDeg, mine: false})
+          onBullet({image: 'assets/friendly_bullet.svg', left: playerLeft, top: playerTop, degree: currentDeg, mine: true});
+          break;
+      }
     }
-  }
-});
+  });
 
   socket.on('move', onMove);
   socket.on('create', onCreate);
@@ -83,21 +111,6 @@
   function onDelete(id) {
     const deletedPlayer = document.getElementById(id);
     if(deletedPlayer) deletedPlayer.parentNode.removeChild(deletedPlayer);
-  }
-
-  function handleTurn(keyName) {
-    switch (keyName) {
-      case 'h':
-        currentDeg += 4;
-        icon.style.transform = `rotate(${currentDeg}deg)`;
-        icon.style.webkitTransform = `rotate(${currentDeg}deg)`;
-        break;
-      case 'f':
-        currentDeg -= 4;
-        icon.style.transform = `rotate(${currentDeg}deg)`;
-        icon.style.webkitTransform = `rotate(${currentDeg}deg)`;
-        break;
-    }
   }
 
   function onBullet(data) {

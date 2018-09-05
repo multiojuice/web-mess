@@ -8,6 +8,7 @@
   const wholeMap = document.getElementsByClassName("map")[0];
   const TURNING_LEFT = -1;
   const TURNING_RIGHT = 1;
+  let justFired = false;
   let turning = 0;
   let currentDeg = 90;
   let playerHealth = 5;
@@ -88,8 +89,15 @@
           isFrozen = !isFrozen;
           break;
         case ' ':
-          socket.emit('bullet', {image: 'assets/enemy_bullet.svg', left: playerLeft, top: playerTop, degree: currentDeg, mine: false})
-          onBullet({image: 'assets/friendly_bullet.svg', left: playerLeft, top: playerTop, degree: currentDeg, mine: true});
+          if(!justFired) {
+            console.warn('just fired', justFired)
+            socket.emit('bullet', {image: 'assets/enemy_bullet.svg', left: playerLeft, top: playerTop, degree: currentDeg, mine: false})
+            onBullet({image: 'assets/friendly_bullet.svg', left: playerLeft, top: playerTop, degree: currentDeg, mine: true});
+            justFired = true;
+            setTimeout(function() {
+              justFired = false;
+            }, 400)
+          }
           break;
       }
     }

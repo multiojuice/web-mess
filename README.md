@@ -1,5 +1,5 @@
 # web-mess
-A wuick game I made in a weekend to demonstrate the usefulness of websockets :) 
+A quick game I made in a weekend to demonstrate the usefulness of websockets :) 
 
 Free for All web browser game written using web-sockets!
 
